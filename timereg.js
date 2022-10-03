@@ -62,6 +62,14 @@ function readLines(lines, index) {
   return results;
 }
 
+function sum(arr) {
+  let result = 0;
+  for (const value of arr) {
+    result += value;
+  }
+  return result;
+}
+
 function printLine(num = 16, char = "=") {
   console.log(char.repeat(num));
 }
@@ -72,6 +80,10 @@ function printResults(results) {
   for (const key in results) {
     console.log(`${key}\t${results[key].toFixed(1)}`);
   }
+
+  printLine();
+  const total = sum(Object.values(results));
+  console.log(`Total\t${total.toFixed(1)}`);
 }
 
 if (!PATH) {
