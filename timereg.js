@@ -2,6 +2,7 @@ const fs = require("fs");
 const { DateTime, Interval } = require("luxon");
 
 const PATH = process.argv[2];
+const DATE = process.env.DATE || DateTime.now().toFormat("yyyy-MM-dd");
 
 function getFile(filePath) {
   try {
@@ -95,7 +96,7 @@ if (!PATH) {
 const content = getFile(PATH);
 const lines = content.split("\n");
 
-const index = readUntilToken(lines, "2022-10-03");
+const index = readUntilToken(lines, DATE);
 
 const result = readLines(lines, index);
 printResults(result);
