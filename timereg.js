@@ -52,6 +52,10 @@ function readLines(lines, index) {
       break;
     }
 
+    if (line.startsWith("#")) {
+      break;
+    }
+
     const [category, hours] = parseLine(line);
     if (category in results) {
       results[category] += hours;
