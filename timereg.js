@@ -40,8 +40,9 @@ function parseLine(line) {
   return [category, duration, taskNumber];
 }
 
-function readLines(lines, startingIndex = 0, verbose = false) {
-  const results = {};
+function generateReportFromLines(lines, startingIndex = 0, verbose = false) {
+  const hoursByCategory = {};
+  const hoursByTask = {};
 
   for (let index = startingIndex; index < lines.length; index++) {
     const line = lines[index];
@@ -54,20 +55,26 @@ function readLines(lines, startingIndex = 0, verbose = false) {
       break;
     }
 
-    const [category, hours, taskNumber] = parseLine(line);
+    const [category, hours, task] = parseLine(line);
 
     if (verbose) {
       console.log(hours.toFixed(1), category, taskNumber);
     }
 
-    if (category in results) {
-      results[category] += hours;
+    if (category in hoursByCategory) {
+      hoursByCategory[category] += hours;
     } else {
-      results[category] = hours;
+      hoursByCategory[category] = hours;
+    }
+
+    if (task in hoursByTask) {
+      hoursByTask[category] += hours;
+    } else {
+      hoursByTask[category] = hours;
     }
   }
 
-  return results;
+  return [hoursByCategory, hoursByTask];
 }
 
 function sum(arr) {
@@ -82,7 +89,12 @@ function printLine(num = 16, char = "=") {
   console.log(char.repeat(num));
 }
 
-function printResults(results) {
+function printReport(results) {
+  if (Object.keys(results).length === 0) {
+    console.error("No matching data to report on");
+    process.exit(1);
+  }
+
   console.log("Task\t Hours");
   printLine();
   for (const key in results) {
@@ -94,19 +106,20 @@ function printResults(results) {
   console.log(`Total\t${total.toFixed(1)}`);
 }
 
-function printReport(filePath, options) {
+function generateAndPrintReport(filePath, options) {
   console.log("TIME REPORT", options.date);
   if (options.verbose) {
     printLine();
   }
 
-  const content = readFile(filePath);
-  const lines = content.split("\n");
-
-  const index = findLineIndex(lines, options.date);
-
-  const result = readLines(lines, index, options.verbose);
-  printResults(result);
+  const lines = readFile(filePath).split("\n");
+  const lineStartIndex = findLineIndex(lines, options.date);
+  const [report] = generateReportFromLines(
+    lines,
+    lineStartIndex,
+    options.verbose
+  );
+  printReport(report);
 }
 
 program
@@ -119,6 +132,6 @@ program
     DateTime.now().toFormat("yyyy-MM-dd")
   )
   .option("-v, --verbose", "use verbose output")
-  .action((filePath, options) => printReport(filePath, options));
+  .action((filePath, options) => generateAndPrintReport(filePath, options));
 
 program.parse();
