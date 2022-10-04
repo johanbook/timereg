@@ -111,9 +111,13 @@ function printReport(filePath, options) {
 
 program
   .name("timereg")
-  .description("tool for registering tools")
-  .argument("<filePath>")
-  .option("--date <date>", "date", DateTime.now().toFormat("yyyy-MM-dd"))
+  .description("A tool for generating time reports")
+  .argument("<filePath>", "path to file with time data")
+  .option(
+    "--date <date>",
+    "the date to generate the report for",
+    DateTime.now().toFormat("yyyy-MM-dd")
+  )
   .option("-v, --verbose", "use verbose output")
   .action((filePath, options) => printReport(filePath, options));
 
