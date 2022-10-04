@@ -13,6 +13,7 @@
     "prettier": "^2.7.1"
   },
   "dependencies": {
+    "commander": "^9.4.1",
     "luxon": "^3.0.4"
   }
 }

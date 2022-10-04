@@ -1,10 +1,8 @@
+const { program } = require("commander");
 const fs = require("fs");
 const { DateTime, Interval } = require("luxon");
 
-const PATH = process.argv[2];
-const DATE = process.env.DATE || DateTime.now().toFormat("yyyy-MM-dd");
-
-function getFile(filePath) {
+function readFile(filePath) {
   try {
     const file = fs.readFileSync(filePath);
     const text = file.toString();
@@ -15,7 +13,7 @@ function getFile(filePath) {
   }
 }
 
-function readUntilToken(lines, token) {
+function findLineIndex(lines, token) {
   let index;
   for (index = 0; index < lines.length; index++) {
     const line = lines[index];
@@ -37,15 +35,15 @@ function parseDuration(line) {
 }
 
 function parseLine(line) {
-  const [hours, category] = line.split(" ");
+  const [hours, category, taskNumber] = line.split(" ");
   const duration = parseDuration(hours);
-  return [category, duration];
+  return [category, duration, taskNumber];
 }
 
-function readLines(lines, index) {
+function readLines(lines, startingIndex = 0, verbose = false) {
   const results = {};
 
-  for (; index < lines.length; index++) {
+  for (let index = startingIndex; index < lines.length; index++) {
     const line = lines[index];
 
     if (!line) {
@@ -56,7 +54,12 @@ function readLines(lines, index) {
       break;
     }
 
-    const [category, hours] = parseLine(line);
+    const [category, hours, taskNumber] = parseLine(line);
+
+    if (verbose) {
+      console.log(hours.toFixed(1), category, taskNumber);
+    }
+
     if (category in results) {
       results[category] += hours;
     } else {
@@ -91,16 +94,27 @@ function printResults(results) {
   console.log(`Total\t${total.toFixed(1)}`);
 }
 
-if (!PATH) {
-  console.error("timereg [path]");
-  console.error("run it like this");
-  process.exit(1);
+function printReport(filePath, options) {
+  console.log("TIME REPORT", options.date);
+  if (options.verbose) {
+    printLine();
+  }
+
+  const content = readFile(filePath);
+  const lines = content.split("\n");
+
+  const index = findLineIndex(lines, options.date);
+
+  const result = readLines(lines, index, options.verbose);
+  printResults(result);
 }
 
-const content = getFile(PATH);
-const lines = content.split("\n");
+program
+  .name("timereg")
+  .description("tool for registering tools")
+  .argument("<filePath>")
+  .option("--date <date>", "date", DateTime.now().toFormat("yyyy-MM-dd"))
+  .option("-v, --verbose", "use verbose output")
+  .action((filePath, options) => printReport(filePath, options));
 
-const index = readUntilToken(lines, DATE);
-
-const result = readLines(lines, index);
-printResults(result);
+program.parse();
