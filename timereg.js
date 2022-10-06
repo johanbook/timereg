@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const { program } = require("commander");
 const fs = require("fs");
 const { DateTime, Interval } = require("luxon");
