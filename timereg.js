@@ -34,8 +34,13 @@ function parseDuration(line) {
   return interval.length("hours");
 }
 
-function parseLine(line) {
-  const [hours, category, taskNumber] = line.split(" ");
+function parseLine(line, delimiter = " ") {
+  const [hours, category, taskNumber] = line.split(delimiter);
+  if (hours == undefined || category == undefined) {
+    console.error(`Unable to parse line: '${line}'`);
+    process.exit(1);
+  }
+
   const duration = parseDuration(hours);
   return [category, duration, taskNumber];
 }
@@ -45,7 +50,7 @@ function generateReportFromLines(lines, startingIndex = 0, verbose = false) {
   const hoursByTask = {};
 
   for (let index = startingIndex; index < lines.length; index++) {
-    const line = lines[index];
+    const line = lines[index].trim();
 
     if (!line) {
       break;
