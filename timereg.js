@@ -63,7 +63,7 @@ function generateReportFromLines(lines, startingIndex = 0, verbose = false) {
     const [category, hours, task] = parseLine(line);
 
     if (verbose) {
-      console.log(hours.toFixed(1), category, taskNumber);
+      console.log(`- ${hours.toFixed(1)} registered on ${category} (${task})`);
     }
 
     if (category in hoursByCategory) {
@@ -72,10 +72,14 @@ function generateReportFromLines(lines, startingIndex = 0, verbose = false) {
       hoursByCategory[category] = hours;
     }
 
+    if (!task) {
+      continue;
+    }
+
     if (task in hoursByTask) {
-      hoursByTask[category] += hours;
+      hoursByTask[task] += hours;
     } else {
-      hoursByTask[category] = hours;
+      hoursByTask[task] = hours;
     }
   }
 
@@ -119,12 +123,19 @@ function generateAndPrintReport(filePath, options) {
 
   const lines = readFile(filePath).split("\n");
   const lineStartIndex = findLineIndex(lines, options.date);
-  const [report] = generateReportFromLines(
+  const [reportByCategory, reportByTask] = generateReportFromLines(
     lines,
     lineStartIndex,
     options.verbose
   );
-  printReport(report);
+
+  if (options.verbose) {
+    console.log("\nREPORT BY TASK");
+    printReport(reportByTask);
+  }
+
+  console.log("\nREPORT BY CATEGORY");
+  printReport(reportByCategory);
 }
 
 program
