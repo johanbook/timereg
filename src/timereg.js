@@ -33,7 +33,14 @@ function parseDuration(line) {
   const startTime = DateTime.fromISO(start);
   const endTime = DateTime.fromISO(end);
   const interval = Interval.fromDateTimes(startTime, endTime);
-  return interval.length("hours");
+  const hours = interval.length("hours");
+
+  if (!hours) {
+    console.log(`Unable to parse duration: ${line}`);
+    process.exit(1);
+  }
+
+  return hours;
 }
 
 function parseLine(line, delimiter = " ") {
