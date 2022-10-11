@@ -1,32 +1,5 @@
-require("dotenv").config();
-
-const { program } = require("commander");
-const fs = require("fs");
 const { DateTime, Interval } = require("luxon");
-
-function readFile(filePath) {
-  try {
-    const file = fs.readFileSync(filePath);
-    const text = file.toString();
-    return text;
-  } catch {
-    console.error("Unable to read file:", filePath);
-    process.exit(1);
-  }
-}
-
-function findLineIndex(lines, token) {
-  let index;
-  for (index = 0; index < lines.length; index++) {
-    const line = lines[index];
-
-    if (line.includes(token)) {
-      return index + 1;
-    }
-  }
-
-  return -1;
-}
+const { readFile, findLineIndex } = require("./fs");
 
 function parseDuration(line) {
   const [start, end] = line.split("-");
@@ -124,13 +97,14 @@ function printReport(results) {
   console.log(`Total\t${total.toFixed(1)}`);
 }
 
-function generateAndPrintReport(filePath, options) {
+exports.generateAndPrintReport = function (filePath, options) {
+  const lines = readFile(filePath).split("\n");
+
   console.log("TIME REPORT", options.date);
   if (options.verbose) {
     printLine();
   }
 
-  const lines = readFile(filePath).split("\n");
   const lineStartIndex = findLineIndex(lines, options.date);
   const [reportByCategory, reportByTask] = generateReportFromLines(
     lines,
@@ -145,18 +119,4 @@ function generateAndPrintReport(filePath, options) {
 
   console.log("\nREPORT BY CATEGORY");
   printReport(reportByCategory);
-}
-
-program
-  .name("timereg")
-  .description("A tool for generating time reports")
-  .argument("<filePath>", "path to file with time data")
-  .option(
-    "--date <date>",
-    "the date to generate the report for",
-    DateTime.now().toFormat("yyyy-MM-dd")
-  )
-  .option("-v, --verbose", "use verbose output")
-  .action((filePath, options) => generateAndPrintReport(filePath, options));
-
-program.parse();
+};
