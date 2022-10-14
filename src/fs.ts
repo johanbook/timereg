@@ -1,6 +1,7 @@
-const fs = require("fs");
+import * as fs from "fs";
 
-exports.readFile = function (filePath) {
+/** Reads file from path */
+export function readFile(filePath: string): string {
   try {
     const file = fs.readFileSync(filePath);
     const text = file.toString();
@@ -9,9 +10,10 @@ exports.readFile = function (filePath) {
     console.error("Unable to read file:", filePath);
     process.exit(1);
   }
-};
+}
 
-exports.findLineIndex = function (lines, token) {
+/** Parses arry until token is found. Return index */
+export function findLineIndex(lines: string[], token: string): number {
   let index;
   for (index = 0; index < lines.length; index++) {
     const line = lines[index];
@@ -23,4 +25,4 @@ exports.findLineIndex = function (lines, token) {
 
   console.error("Unable to find:", token);
   process.exit(1);
-};
+}

@@ -1,8 +1,10 @@
-require("dotenv").config();
-const { DateTime } = require("luxon");
+import * as dotenv from "dotenv";
+import { DateTime } from "luxon";
 
-const { program } = require("commander");
-const { generateAndPrintReport } = require("./report");
+import { program } from "commander";
+import { generateAndPrintReport } from "./report";
+
+dotenv.config();
 
 program
   .name("timereg")

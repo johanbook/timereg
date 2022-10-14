@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "transpile": "tsc --outDir bin src/index.ts",
+    "run": "ts-node src"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prettier": "^2.7.1"
+    "@types/luxon": "^3.0.1",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1"
   },
   "dependencies": {
     "commander": "^9.4.1",

@@ -1,7 +1,12 @@
-const { DateTime, Interval } = require("luxon");
-const { readFile, findLineIndex } = require("./fs");
+import { DateTime, Interval } from "luxon";
+import { readFile, findLineIndex } from "./fs";
+import { Options } from "./interfaces";
+import { printLine, sum } from "./utils";
 
-function parseDuration(line) {
+type Report = Record<string, number>;
+
+/** Parses duration. Time is expected to be on format `09:00-12:00` */
+function parseDuration(line: string): number {
   const [start, end] = line.split("-");
   const startTime = DateTime.fromISO(start);
   const endTime = DateTime.fromISO(end);
@@ -16,7 +21,7 @@ function parseDuration(line) {
   return hours;
 }
 
-function parseLine(line, delimiter = " ") {
+function parseLine(line: string, delimiter = " "): [string, number, string?] {
   const [hours, category, taskNumber] = line.split(delimiter);
   if (hours == undefined || category == undefined) {
     console.error(`Unable to parse line: '${line}'`);
@@ -27,9 +32,13 @@ function parseLine(line, delimiter = " ") {
   return [category, duration, taskNumber];
 }
 
-function generateReportFromLines(lines, startingIndex = 0, verbose = false) {
-  const hoursByCategory = {};
-  const hoursByTask = {};
+function generateReportFromLines(
+  lines: string[],
+  startingIndex = 0,
+  verbose = false
+): [Report, Report] {
+  const hoursByCategory: Report = {};
+  const hoursByTask: Report = {};
 
   for (let index = startingIndex; index < lines.length; index++) {
     const line = lines[index].trim();
@@ -68,19 +77,7 @@ function generateReportFromLines(lines, startingIndex = 0, verbose = false) {
   return [hoursByCategory, hoursByTask];
 }
 
-function sum(arr) {
-  let result = 0;
-  for (const value of arr) {
-    result += value;
-  }
-  return result;
-}
-
-function printLine(num = 16, char = "=") {
-  console.log(char.repeat(num));
-}
-
-function printReport(results) {
+function printReport(results: Report): void {
   if (Object.keys(results).length === 0) {
     console.error("No matching data to report on");
     process.exit(1);
@@ -97,7 +94,10 @@ function printReport(results) {
   console.log(`Total\t${total.toFixed(1)}`);
 }
 
-exports.generateAndPrintReport = function (filePath, options) {
+export function generateAndPrintReport(
+  filePath: string,
+  options: Options
+): void {
   const lines = readFile(filePath).split("\n");
 
   console.log("TIME REPORT", options.date);
@@ -119,4 +119,4 @@ exports.generateAndPrintReport = function (filePath, options) {
 
   console.log("\nREPORT BY CATEGORY");
   printReport(reportByCategory);
-};
+}
