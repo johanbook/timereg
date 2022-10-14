@@ -1,7 +1,7 @@
 import { DateTime, Interval } from "luxon";
-import { readFile, findLineIndex } from "./fs";
+import { readFile, findLineIndex } from "../utils/fs";
 import { Options } from "./interfaces";
-import { printLine, sum } from "./utils";
+import { printLine, sum } from "../utils/utils";
 
 type Report = Record<string, number>;
 
@@ -94,11 +94,8 @@ function printReport(results: Report): void {
   console.log(`Total\t${total.toFixed(1)}`);
 }
 
-export function generateAndPrintReport(
-  filePath: string,
-  options: Options
-): void {
-  const lines = readFile(filePath).split("\n");
+export function generateAndPrintReport(options: Options): void {
+  const lines = readFile(options.filePath).split("\n");
 
   console.log("TIME REPORT", options.date);
   if (options.verbose) {

@@ -1,7 +1,7 @@
 {
   "name": "timereg",
   "version": "1.0.0",
-  "description": "",
+  "description": "A tool for generating time reports",
   "main": "index.js",
   "scripts": {
     "transpile": "tsc --outDir bin src/index.ts",
@@ -16,8 +16,9 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
+    "@types/jira-client": "^7.1.4",
     "commander": "^9.4.1",
-    "dotenv": "^16.0.3",
+    "jira-client": "^8.2.0",
     "luxon": "^3.0.4"
   }
 }

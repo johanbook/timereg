@@ -1,5 +1,13 @@
 import * as fs from "fs";
 
+export function createFolder(path: string): void {
+  fs.mkdirSync(path);
+}
+
+export function fileExists(path: string): boolean {
+  return fs.existsSync(path);
+}
+
 /** Reads file from path */
 export function readFile(filePath: string): string {
   try {
@@ -10,6 +18,20 @@ export function readFile(filePath: string): string {
     console.error("Unable to read file:", filePath);
     process.exit(1);
   }
+}
+
+export function readJSONFile(filePath: string): any {
+  const data = readFile(filePath);
+  return JSON.parse(data);
+}
+
+export function writeFile(filePath: string, data: string): void {
+  fs.writeFileSync(filePath, data);
+}
+
+export function writeJSONFile(filePath: string, data: unknown): void {
+  const jsonifiedData = JSON.stringify(data, null, 2);
+  writeFile(filePath, jsonifiedData);
 }
 
 /** Parses arry until token is found. Return index */
