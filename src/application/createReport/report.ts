@@ -24,13 +24,15 @@ function printReport(results: Record<string, number>): void {
   console.log(`Total\t${total.toFixed(1)}`);
 }
 
-function getJiraInfo(report: Report): void {
+async function getJiraInfo(report: Report): Promise<void> {
   for (const issueId in report.byIssue) {
     console.log(issueId);
+    const issue = await jira.getIssue(issueId);
+    console.log({ issue });
   }
 }
 
-export function generateAndPrintReport(options: Options): void {
+export async function generateAndPrintReport(options: Options): Promise<void> {
   const lines = readFile(options.filePath).split("\n");
 
   const lineStartIndex = findLineIndex(lines, options.date);
@@ -41,7 +43,8 @@ export function generateAndPrintReport(options: Options): void {
   );
 
   if (options.jira) {
-    getJiraInfo(report);
+    jira.initializeClient(options.jira);
+    await getJiraInfo(report);
   }
 
   console.log("TIME REPORT", options.date);

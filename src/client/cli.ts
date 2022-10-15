@@ -7,10 +7,14 @@ import * as config from "../config";
 
 program.name("timereg").description("A tool for generating time reports");
 
-program.command("config").action(() => createConfig());
+program
+  .command("config")
+  .description("setup configuration for CLI")
+  .action(() => createConfig());
 
 program
-  .command("report", "generate a report")
+  .command("report")
+  .description("generate a report")
   .option(
     "--filePath <filePath>",
     "path to file with time sheet, overriding default configuration"
