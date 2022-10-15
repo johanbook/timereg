@@ -8,6 +8,7 @@
     "build-linux-x64": "pkg . --targets node16-linux-x64",
     "build-macos-x64": "pkg . --targets node16-macos-x64",
     "build-win-x64": "pkg . --targets node16-win-x64",
+    "release": "standard-version",
     "transpile": "tsc"
   },
   "keywords": [],
@@ -18,7 +19,8 @@
   },
   "devDependencies": {
     "@types/luxon": "^3.0.1",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "standard-version": "^9.5.0"
   },
   "dependencies": {
     "@types/jira-client": "^7.1.4",
