@@ -9,6 +9,8 @@
     "build-macos-x64": "pkg . --targets node16-macos-x64",
     "build-win-x64": "pkg . --targets node16-win-x64",
     "release": "standard-version",
+    "test": "jest",
+    "test:coverage": "jest --ci --coverage",
     "transpile": "tsc"
   },
   "keywords": [],
@@ -18,9 +20,11 @@
     "outputPath": "dist"
   },
   "devDependencies": {
+    "@types/jest": "^29.1.2",
     "@types/luxon": "^3.0.1",
     "prettier": "^2.7.1",
-    "standard-version": "^9.5.0"
+    "standard-version": "^9.5.0",
+    "ts-jest": "^29.0.3"
   },
   "dependencies": {
     "@types/jira-client": "^7.1.4",
