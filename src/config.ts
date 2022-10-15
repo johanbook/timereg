@@ -6,12 +6,14 @@ import * as fs from "./utils/fs";
 const CONFIG_DIRECTORY = ".timereg";
 const CONFIG_FILE_NAME = "config.json";
 
-interface Config {
-  jira?: {
-    url: string;
-    username: string;
-    accessToken: string;
-  };
+export interface JiraConfig {
+  url: string;
+  username: string;
+  accessToken: string;
+}
+
+export interface Config {
+  jira?: JiraConfig;
   filePath: string;
 }
 

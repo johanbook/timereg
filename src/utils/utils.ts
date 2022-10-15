@@ -16,6 +16,11 @@ export async function prompt(question: string): Promise<string> {
   });
 }
 
+export async function booleanPrompt(question: string): Promise<boolean> {
+  const answer = await prompt(`${question} (y/n)?`);
+  return answer.toLowerCase() == "y";
+}
+
 /** Sums numbers in array */
 export function sum(array: number[]): number {
   let result = 0;

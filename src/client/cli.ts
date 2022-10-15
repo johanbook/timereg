@@ -1,10 +1,9 @@
+import { program } from "commander";
 import { DateTime } from "luxon";
 
-import { program } from "commander";
-import { generateAndPrintReport } from "../application/report";
+import generateAndPrintReport from "../application/createReport";
+import createConfig from "../application/createConfig";
 import * as config from "../config";
-import { createConfig } from "../application/createConfig";
-import { readConfig } from "../config";
 
 program.name("timereg").description("A tool for generating time reports");
 
@@ -23,7 +22,7 @@ program
   )
   .option("-v, --verbose", "use verbose output")
   .action((options) => {
-    const configs = readConfig();
+    const configs = config.readConfig();
     const mergedOptions = { ...configs, ...options };
     generateAndPrintReport(mergedOptions);
   });
